@@ -36,7 +36,7 @@ export default {
   methods: {
     async get_service_list(){
       var sls = await axios.get(
-          "http://127.0.0.1:8000/sale_service_list/"
+          "https://finance-api.darken.gen.tr/sale_service_list/"
       );
       this.service_list = sls.data;
     }

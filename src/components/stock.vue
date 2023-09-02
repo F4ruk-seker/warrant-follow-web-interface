@@ -152,10 +152,10 @@ export default {
     async get_stock_data() {
       try {
         var sl = await axios.get(
-            "http://127.0.0.1:8000/stock_list/"
+            "https://finance-api.darken.gen.tr/stock_list/"
         );
         var sls = await axios.get(
-            "http://127.0.0.1:8000/sale_service_list/"
+            "https://finance-api.darken.gen.tr/sale_service_list/"
         );
         this.sale_service_list = sls.data;
         this.stock_list = sl.data;
