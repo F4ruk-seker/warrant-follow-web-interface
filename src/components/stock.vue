@@ -20,6 +20,7 @@
 
       <th scope="col">purchase cost</th>
       <th scope="col">Now Gain</th>
+      <th scope="col">Range</th>
 
       <th scope="col">Status</th>
       <th scope="col">DateFlow</th>
@@ -35,9 +36,16 @@
       <td>{{ stock.current_price }}</td>
       <td>{{ stock.purchase_quantity }}</td>
 
-      <td>{{ stock.initial_price * stock.purchase_quantity }}</td>
-      <td>{{ stock.current_price * stock.purchase_quantity }}</td>
+      <td>{{ (stock.initial_price * stock.purchase_quantity).toFixed(2) }}</td>
+      <td>{{ (stock.current_price * stock.purchase_quantity).toFixed(2) }}</td>
 
+      <td v-if=" (stock.current_price * stock.purchase_quantity - stock.initial_price * stock.purchase_quantity ) > 0"
+          style="color: var(--bs-success)"
+      > +{{ (stock.current_price * stock.purchase_quantity - stock.initial_price * stock.purchase_quantity).toFixed(2) }}
+      </td>
+      <td v-else style="color: var(--bs-danger)">
+       {{ (stock.current_price * stock.purchase_quantity - stock.initial_price * stock.purchase_quantity).toFixed(2) }}
+      </td>
       <td><input type="checkbox" :checked="stock.process"></td>
       <td>
         <button type="button" class="btn btn-secondary disabled" disabled readonly>
@@ -59,13 +67,14 @@
           <option v-for="sale_service in sale_service_list" :value="sale_service.id">{{ sale_service.name }}</option>
         </select>
       </td>
-      <td><input class="form-control" type="text" placeholder="name" v-model="new_stock.name"></td>
+      <td><input class="form-control" type="text" placeholder="name" v-model="new_stock.name" required></td>
       <td><input class="form-control" type="number" placeholder="initial_price" v-model="new_stock.initial_price"></td>
       <td><input class="form-control" type="number" placeholder="current_price" v-model="new_stock.current_price"></td>
       <td><input class="form-control" type="number" placeholder="purchase_quantity" v-model="new_stock.purchase_quantity"></td>
 
       <td><input class="form-control" type="number" :value="new_stock.initial_price * new_stock.purchase_quantity" readonly placeholder="purchase cost"></td>
       <td><input class="form-control" type="number" :value="new_stock.current_price * new_stock.purchase_quantity" readonly placeholder="Now Gain"></td>
+      <td><hr></td>
 
       <td><input class="my-auto" type="checkbox" :checked="new_stock.process"></td>
       <td class="d-flex">
@@ -75,7 +84,7 @@
 
       </td>
       <td>
-        <button type="button" class="btn btn-success fw-semibold" v-on:click="date_flow = true">
+        <button type="button" class="btn btn-success fw-semibold" v-on:click="create_new_stock()">
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
       </td>
@@ -88,21 +97,18 @@
       <td><hr></td>
       <td><hr></td>
       <td><hr></td>
-<!--
-"request_start_date": data.request_start_date,
-"request_end_date": data.request_end_date,
-"process_start_date": data.process_start_date
-        -->
-
       <td><input class="form-control" type="date" pattern="YYYY-MM-DD" v-model="new_date_flow.request_start_date" placeholder="request start date" required></td>
       <td><input class="form-control" type="date" pattern="YYYY-MM-DD" v-model="new_date_flow.request_end_date" placeholder="request start date" required></td>
       <td><input class="form-control" type="date" pattern="YYYY-MM-DD" v-model="new_date_flow.process_start_date" placeholder="request start date" required></td>
+      <td><hr></td>
+
     <td class="d-flex">
-      <button type="button" class="btn btn-success rounded-end-0 fw-semibold" v-on:click="date_flow = false">
+      <button type="button" class="btn btn-success fw-semibold" v-on:click="date_flow = false">
         <font-awesome-icon :icon="['fas', 'calendar-plus']" />
       </button>
-      <div class="border"></div>
-      <button type="button" class="btn btn-danger rounded-start-0 fw-semibold" v-on:click="date_flow = false;new_date_flow= {}">
+    </td>
+    <td>
+      <button type="submit" class="btn btn-danger  fw-semibold" v-on:click="date_flow = false;new_date_flow= {}">
         <font-awesome-icon :icon="['fas', 'calendar-minus']" />
       </button>
     </td>
@@ -115,6 +121,7 @@
 
 <script>
 import axios from 'axios';
+
 
 export default {
   name: "stock",
@@ -139,6 +146,9 @@ export default {
   },
   methods:{
     create_new_stock(){
+      for (var newStockKey in this.new_stock) {
+        console.log(newStockKey)
+      }
       console.log(this.new_stock)
     },
     get_sale_service_name(id){
@@ -150,12 +160,13 @@ export default {
       return 'None'
     },
     async get_stock_data() {
+
       try {
         var sl = await axios.get(
-            "https://finance-api.darken.gen.tr/stock_list/"
+            process.env.API_HOST + 'stock_list/'
         );
         var sls = await axios.get(
-            "https://finance-api.darken.gen.tr/sale_service_list/"
+            process.env.API_HOST + "sale_service_list/"
         );
         this.sale_service_list = sls.data;
         this.stock_list = sl.data;

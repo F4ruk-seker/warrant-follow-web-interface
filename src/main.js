@@ -17,7 +17,6 @@ import { fas} from '@fortawesome/free-solid-svg-icons';
 library.add(fas)
 
 
-
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app')
