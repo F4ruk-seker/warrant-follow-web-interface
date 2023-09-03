@@ -17,5 +17,7 @@ export default defineConfig({
   define: {
     // Define environment variables for your application code
     'process.env.API_HOST': JSON.stringify(env.parsed.API_HOST),
+    'import.meta.env.API_HOST': JSON.stringify(env.parsed.API_HOST),
+
   },
 })
