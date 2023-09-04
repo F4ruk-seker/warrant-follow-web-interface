@@ -41,12 +41,16 @@
 
       <td v-if=" (stock.current_price * stock.purchase_quantity - stock.initial_price * stock.purchase_quantity ) > 0"
           style="color: var(--bs-success)"
+          class="fw-semibold"
       > +{{ (stock.current_price * stock.purchase_quantity - stock.initial_price * stock.purchase_quantity).toFixed(2) }}
       </td>
-      <td v-else style="color: var(--bs-danger)">
+      <td v-else style="color: var(--bs-danger)" class="fw-semibold">
        {{ (stock.current_price * stock.purchase_quantity - stock.initial_price * stock.purchase_quantity).toFixed(2) }}
       </td>
-      <td><input type="checkbox" :checked="stock.process"></td>
+      <td>
+        <font-awesome-icon :icon="['fas', 'heart']" v-if="stock.process" style="color: var(--bs-success )" />
+        <font-awesome-icon :icon="['fas', 'heart']" v-else style="color: var(--bs-danger)" />
+      </td>
       <td>
         <button type="button" class="btn btn-secondary disabled" disabled readonly>
         <font-awesome-icon icon="fa-solid fa-calendar-days" />
