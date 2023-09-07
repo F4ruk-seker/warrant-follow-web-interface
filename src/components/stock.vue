@@ -125,9 +125,21 @@
 
 <script>
 import axios from 'axios';
+import { useStore } from "vuex";
+import { computed } from "vue";
+
 
 
 export default {
+  setup(){
+    const store = useStore();
+
+    const cookies = computed(() => {
+      return store.getters.get_cookie;
+    });
+    console.log(cookies)
+  return { cookies }
+  },
   name: "stock",
   data() {
     return{
@@ -164,13 +176,12 @@ export default {
       return 'None'
     },
     async get_stock_data() {
-
       try {
         var sl = await axios.get(
             process.env.API_HOST + 'stock_list/'
         );
         var sls = await axios.get(
-            process.env.API_HOST + "sale_service_list/"
+            process.env.API_HOST + "sale_service_list/",
         );
         this.sale_service_list = sls.data;
         this.stock_list = sl.data;

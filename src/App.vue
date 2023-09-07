@@ -5,10 +5,8 @@ import Service from "@/components/service.vue";
 </script>
 
 <template>
-
-
-  <main class="container">
-    <section class="border rounded py-2 px-3"><stock /></section>
+  <main>
+    <router-view/>
   </main>
 </template>
 
